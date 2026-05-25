@@ -13,7 +13,7 @@ A RESTful Todo List Manager built with Flask and SQLite.
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.8+
 - Flask 1.1.4
 
 ## Installation

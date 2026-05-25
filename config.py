@@ -21,7 +21,7 @@ class DevelopmentConfig(Config):
 class TestingConfig(Config):
     """Testing configuration."""
     TESTING = True
-    DATABASE = ":memory:"
+    DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_todos.db")
 
 
 class ProductionConfig(Config):

@@ -2,26 +2,30 @@
 
 """API routes for todo operations."""
 
-import json
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from todoapp.models import TodoModel
 
 api = Blueprint("api", __name__, url_prefix="/api")
-todo_model = TodoModel()
+
+
+def _get_model():
+    """Get a TodoModel instance configured with the current app's database."""
+    db_path = current_app.config.get("DATABASE")
+    return TodoModel(db_path)
 
 
 @api.route("/todos", methods=["GET"])
 def list_todos():
     """List all todos. Query param: ?show_done=false to hide completed."""
     show_done = request.args.get("show_done", "true").lower() != "false"
-    todos = todo_model.get_all(show_done=show_done)
+    todos = _get_model().get_all(show_done=show_done)
     return jsonify({"todos": todos})
 
 
 @api.route("/todos/<int:todo_id>", methods=["GET"])
 def get_todo(todo_id):
     """Get a single todo by ID."""
-    todo = todo_model.get_by_id(todo_id)
+    todo = _get_model().get_by_id(todo_id)
     if todo is None:
         return jsonify({"error": "Todo not found"}), 404
     return jsonify({"todo": todo})
@@ -42,8 +46,8 @@ def create_todo():
     priority = data.get("priority", "medium")
 
     try:
-        todo = todo_model.create(title, description, priority)
-    except ValueError, e:
+        todo = _get_model().create(title, description, priority)
+    except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
     return jsonify({"todo": todo}), 201
@@ -57,8 +61,8 @@ def update_todo(todo_id):
         return jsonify({"error": "Request must be JSON"}), 400
 
     try:
-        todo = todo_model.update(todo_id, **data)
-    except ValueError, e:
+        todo = _get_model().update(todo_id, **data)
+    except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
     if todo is None:
@@ -70,7 +74,7 @@ def update_todo(todo_id):
 @api.route("/todos/<int:todo_id>", methods=["DELETE"])
 def delete_todo(todo_id):
     """Delete a todo by ID."""
-    deleted = todo_model.delete(todo_id)
+    deleted = _get_model().delete(todo_id)
     if not deleted:
         return jsonify({"error": "Todo not found"}), 404
     return jsonify({"message": "Todo deleted successfully"})
@@ -79,7 +83,7 @@ def delete_todo(todo_id):
 @api.route("/todos/<int:todo_id>/complete", methods=["POST"])
 def complete_todo(todo_id):
     """Mark a todo as complete."""
-    todo = todo_model.update(todo_id, done=True)
+    todo = _get_model().update(todo_id, done=True)
     if todo is None:
         return jsonify({"error": "Todo not found"}), 404
     return jsonify({"todo": todo})
@@ -91,13 +95,13 @@ def search_todos():
     query = request.args.get("q", "").strip()
     if not query:
         return jsonify({"error": "Search query is required"}), 400
-    todos = todo_model.search(query)
+    todos = _get_model().search(query)
     return jsonify({"todos": todos})
 
 
 @api.route("/todos/stats", methods=["GET"])
 def todo_stats():
     """Return todo statistics."""
-    stats = todo_model.count()
+    stats = _get_model().count()
     stats["pending"] = stats["total"] - stats["completed"]
     return jsonify({"stats": stats})

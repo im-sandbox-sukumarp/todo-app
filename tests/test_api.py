@@ -28,6 +28,9 @@ class TodoApiTestCase(unittest.TestCase):
         """Clean up test database."""
         with self.app.app_context():
             drop_db(self.app.config["DATABASE"])
+        db_path = self.app.config["DATABASE"]
+        if os.path.exists(db_path):
+            os.remove(db_path)
 
     def _create_todo(self, title="Test Todo", description="Test Description", priority="medium"):
         """Helper to create a todo via the API."""
@@ -154,12 +157,12 @@ class TodoApiTestCase(unittest.TestCase):
 
     def test_filter_done_todos(self):
         """Test filtering out completed todos."""
-        self._create_todo(title="Done task")
-        create_resp = self._create_todo(title="Pending task")
-        done_resp = self._create_todo(title="Also done")
+        resp1 = self._create_todo(title="Done task")
+        self._create_todo(title="Pending task")
+        resp3 = self._create_todo(title="Also done")
         # Complete the first and third
-        todo_id_1 = json.loads(self.client.get("/api/todos").data)["todos"][-1]["id"]
-        todo_id_3 = json.loads(done_resp.data)["todo"]["id"]
+        todo_id_1 = json.loads(resp1.data)["todo"]["id"]
+        todo_id_3 = json.loads(resp3.data)["todo"]["id"]
         self.client.post("/api/todos/%d/complete" % todo_id_1)
         self.client.post("/api/todos/%d/complete" % todo_id_3)
 

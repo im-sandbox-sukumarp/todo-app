@@ -14,6 +14,11 @@ def _get_model():
     return TodoModel(db_path)
 
 
+def _validation_error_message(exc):
+    """Extract a safe error message from a ValueError."""
+    return exc.args[0] if exc.args else "Invalid input"
+
+
 @api.route("/todos", methods=["GET"])
 def list_todos():
     """List all todos. Query param: ?show_done=false to hide completed."""
@@ -48,7 +53,7 @@ def create_todo():
     try:
         todo = _get_model().create(title, description, priority)
     except ValueError as e:
-        return jsonify({"error": "Invalid input: %s" % e.args[0] if e.args else "Invalid input"}), 400
+        return jsonify({"error": _validation_error_message(e)}), 400
 
     return jsonify({"todo": todo}), 201
 
@@ -63,7 +68,7 @@ def update_todo(todo_id):
     try:
         todo = _get_model().update(todo_id, **data)
     except ValueError as e:
-        return jsonify({"error": "Invalid input: %s" % e.args[0] if e.args else "Invalid input"}), 400
+        return jsonify({"error": _validation_error_message(e)}), 400
 
     if todo is None:
         return jsonify({"error": "Todo not found"}), 404

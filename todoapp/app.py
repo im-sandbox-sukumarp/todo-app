@@ -1,9 +1,9 @@
-# -*- coding: utf-8 -*-
+# Copyright (c) InfoMCopilot-KR. All rights reserved.
 
 """Flask application factory."""
 
 import os
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from config import config
 from todoapp.database import init_db
 from todoapp.routes import api
@@ -20,26 +20,13 @@ def create_app(config_name=None):
     # Initialize database
     init_db(app.config.get("DATABASE"))
 
-    # Register blueprints
-    app.register_blueprint(api)
+    # Keep the original API path available while exposing the versioned API.
+    app.register_blueprint(api, url_prefix="/api/v1")
+    app.register_blueprint(api, url_prefix="/api", name="api_legacy")
 
-    # Root endpoint
     @app.route("/")
     def index():
-        return jsonify({
-            "name": "Todo List Manager API",
-            "version": "1.0.0",
-            "endpoints": {
-                "list_todos": "GET /api/todos",
-                "get_todo": "GET /api/todos/<id>",
-                "create_todo": "POST /api/todos",
-                "update_todo": "PUT /api/todos/<id>",
-                "delete_todo": "DELETE /api/todos/<id>",
-                "complete_todo": "POST /api/todos/<id>/complete",
-                "search_todos": "GET /api/todos/search?q=<query>",
-                "todo_stats": "GET /api/todos/stats",
-            }
-        })
+        return render_template("index.html")
 
     # Error handlers
     @app.errorhandler(404)

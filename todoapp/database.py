@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# Copyright (c) InfoMCopilot-KR. All rights reserved.
 
 """Database initialization and connection management."""
 

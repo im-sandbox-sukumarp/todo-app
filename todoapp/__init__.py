@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
+# Copyright (c) InfoMCopilot-KR. All rights reserved.
 
-"""Todo List Manager - A Python 2 Web Application"""
+"""GitHub-themed Todo List Manager."""
 
 __version__ = "1.0.0"

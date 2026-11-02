@@ -1,0 +1,87 @@
+<!-- Copyright (c) InfoMCopilot-KR. All rights reserved. -->
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#24292f">
+  <title>My tasks · Todo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="Todo home">
+        <span class="brand-mark" aria-hidden="true">✓</span>
+        <span>todo-app</span>
+      </a>
+      <span class="header-caption">A little more organized</span>
+    </div>
+  </header>
+
+  <main class="page-container">
+    <section class="page-heading" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">YOUR WORKSPACE</p>
+        <h1 id="page-title">My tasks</h1>
+        <p class="page-description">Keep track of what needs to get done.</p>
+      </div>
+      <div class="task-count" aria-live="polite">
+        <strong id="open-count">—</strong>
+        <span>open</span>
+      </div>
+    </section>
+
+    <section class="panel composer" aria-labelledby="new-task-title">
+      <h2 id="new-task-title">Create a task</h2>
+      <form id="todo-form">
+        <label class="sr-only" for="todo-title">Task title</label>
+        <input id="todo-title" name="title" type="text" maxlength="200"
+               placeholder="What needs to be done?" required>
+        <label class="sr-only" for="todo-description">Description</label>
+        <textarea id="todo-description" name="description" rows="2"
+                  placeholder="Add a description (optional)"></textarea>
+        <div class="form-footer">
+          <label class="priority-label" for="todo-priority">Priority</label>
+          <select id="todo-priority" name="priority">
+            <option value="low">Low</option>
+            <option value="medium" selected>Medium</option>
+            <option value="high">High</option>
+          </select>
+          <button class="button button-primary" type="submit">Add task</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="task-section" aria-labelledby="task-list-title">
+      <div class="list-heading">
+        <div>
+          <h2 id="task-list-title">Tasks</h2>
+          <p id="task-summary">Loading your tasks…</p>
+        </div>
+        <form id="search-form" role="search">
+          <label class="sr-only" for="search-input">Search tasks</label>
+          <input id="search-input" type="search" placeholder="Search tasks">
+        </form>
+      </div>
+      <nav class="filter-tabs" aria-label="Filter tasks">
+        <button class="filter-tab active" type="button" data-filter="open" aria-pressed="true">Open</button>
+        <button class="filter-tab" type="button" data-filter="all" aria-pressed="false">All</button>
+        <button class="filter-tab" type="button" data-filter="completed" aria-pressed="false">Completed</button>
+      </nav>
+      <div id="status-message" class="status-message" role="alert" hidden></div>
+      <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+      <div id="empty-state" class="empty-state" hidden>
+        <span class="empty-icon" aria-hidden="true">✓</span>
+        <h3>No tasks here</h3>
+        <p>Add a task above or choose another filter.</p>
+      </div>
+      <footer class="list-footer">
+        <span id="completion-summary">Loading progress…</span>
+        <span class="github-note"><span aria-hidden="true">●</span> Made for getting things done</span>
+      </footer>
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/app.js') }}" defer></script>
+</body>
+</html>

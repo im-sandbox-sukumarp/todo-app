@@ -1,19 +1,23 @@
-# -*- coding: utf-8 -*-
+# Copyright (c) InfoMCopilot-KR. All rights reserved.
 
 from setuptools import setup, find_packages
 
 setup(
     name="todo-app",
     version="1.0.0",
-    description="A Todo List Manager built with Python 2 and Flask",
-    author="Demo",
+    description="A GitHub-themed Todo List Manager built with Flask",
+    author="InfoMCopilot-KR",
     packages=find_packages(),
+    include_package_data=True,
+    package_data={
+        "todoapp": [
+            "templates/*.html",
+            "static/css/*.css",
+            "static/js/*.js",
+        ],
+    },
     install_requires=[
-        "Flask==1.1.4",
-        "markupsafe==1.1.1",
-        "itsdangerous==1.1.0",
-        "Jinja2==2.11.3",
-        "Werkzeug==1.0.1",
+        "Flask==3.1.1",
     ],
-    python_requires=">=2.7, <3",
+    python_requires=">=3.9",
 )

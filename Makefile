@@ -1,15 +1,27 @@
-.PHONY: run test clean install
+# Copyright (c) InfoMCopilot-KR. All rights reserved.
+
+.PHONY: run test coverage clean install install-dev
+
+PYTHON ?= python
 
 install:
-	pip install -r requirements.txt
+	$(PYTHON) -m pip install -r requirements.txt
+
+install-dev:
+	$(PYTHON) -m pip install -r requirements-dev.txt
 
 run:
-	python run.py
+	$(PYTHON) run.py
 
 test:
-	python -m pytest tests/ -v
+	$(PYTHON) -m unittest discover -v
+
+coverage:
+	$(PYTHON) -m coverage run --source=todoapp -m unittest discover
+	$(PYTHON) -m coverage report -m
 
 clean:
 	find . -name "*.pyc" -delete
 	find . -name "__pycache__" -type d -exec rm -rf {} +
 	rm -f todos.db
+	rm -f .coverage

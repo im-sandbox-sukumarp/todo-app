@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# Copyright (c) InfoMCopilot-KR. All rights reserved.
 
 """Application configuration."""
 
@@ -9,7 +9,7 @@ class Config(object):
     """Base configuration."""
     DEBUG = False
     TESTING = False
-    SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-change-in-production")
+    SECRET_KEY = os.environ.get("SECRET_KEY")
     DATABASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "todos.db")
 
 

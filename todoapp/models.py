@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# Copyright (c) InfoMCopilot-KR. All rights reserved.
 
 """Todo model with CRUD operations."""
 
@@ -38,7 +38,7 @@ class TodoModel(object):
             cursor.execute("SELECT * FROM todos WHERE done = 0 ORDER BY created_at DESC")
         rows = cursor.fetchall()
         conn.close()
-        return map(self._row_to_dict, rows)
+        return [self._row_to_dict(row) for row in rows]
 
     def get_by_id(self, todo_id):
         """Return a single todo by ID."""
@@ -74,7 +74,7 @@ class TodoModel(object):
 
         allowed_fields = {"title", "description", "priority", "done"}
         updates = {}
-        for key, value in kwargs.iteritems():
+        for key, value in kwargs.items():
             if key in allowed_fields:
                 updates[key] = value
 
@@ -87,8 +87,9 @@ class TodoModel(object):
         if "done" in updates:
             updates["done"] = 1 if updates["done"] else 0
 
-        set_clause = ", ".join(["%s = ?" % k for k in updates.keys()])
-        values = updates.values() + [todo_id]
+        update_items = list(updates.items())
+        set_clause = ", ".join(["%s = ?" % key for key, _ in update_items])
+        values = [value for _, value in update_items] + [todo_id]
 
         conn = self._get_conn()
         cursor = conn.cursor()
@@ -121,7 +122,7 @@ class TodoModel(object):
         )
         rows = cursor.fetchall()
         conn.close()
-        return map(self._row_to_dict, rows)
+        return [self._row_to_dict(row) for row in rows]
 
     def count(self):
         """Return counts of total and completed todos."""
